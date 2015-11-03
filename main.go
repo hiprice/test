@@ -33,7 +33,7 @@ func sign(w http.ResponseWriter, req *http.Request) {
 
 func checkSign(sign,timestamp,nonce,token string) bool {
 	tmp := []string{token,timestamp,nonce}
-	sort.StringSlice{token,timestamp,nonce}
+	sort.StringSlice(tmp)
 	//连接为字符串
 	var str string
 	for _,v := range tmp{
