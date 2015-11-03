@@ -1,40 +1,56 @@
 package main
 
 import (
-	"net/http"
+	"crypto/sha1"
+	"fmt"
+	"io"
 	"log"
-
-//	"github.com/chanxuehong/wechat/mp"
-	"github.com/chanxuehong/wechat/util"
+	"net/http"
+	"sort"
+	"strings"
 )
 
-const AppID = "wx96ae3fe27ad45e53"
-const AppSecret = "ea4a0db81cc6a0017a69b0172515d5d8"
+const (
+	token = "wexin"
+)
+
+func makeSignature(timestamp, nonce string) string {
+	sl := []string{token, timestamp, nonce}
+	sort.Strings(sl)
+	s := sha1.New()
+	io.WriteString(s, strings.Join(sl, ""))
+	return fmt.Sprintf("%x", s.Sum(nil))
+}
+
+func validateUrl(w http.ResponseWriter, r *http.Request) bool {
+	timestamp := strings.Join(r.Form["timestamp"], "")
+	nonce := strings.Join(r.Form["nonce"], "")
+	signatureGen := makeSignature(timestamp, nonce)
+
+	signatureIn := strings.Join(r.Form["signature"], "")
+	if signatureGen != signatureIn {
+		return false
+	}
+	echostr := strings.Join(r.Form["echostr"], "")
+	fmt.Fprintf(w, echostr)
+	return true
+}
+
+func procRequest(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	if !validateUrl(w, r) {
+		log.Println("Wechat Service: this http request is not from Wechat platform!")
+		return
+	}
+	log.Println("Wechat Service: validateUrl Ok!")
+}
 
 func main() {
-	http.HandleFunc("/index", sign)
-	http.ListenAndServe(":8001", nil)
-}
-
-func sign(w http.ResponseWriter, req *http.Request) {
-	req.ParseForm()
-	log.Println(req.Form)
-//	checked := checkSign(req.Form["signature"],req.Form["timestamp"],req.Form["nonce"],req.Form["token"])
-	echoStr := req.Form["echoStr"]
-
-	log.Println(echoStr)
-//	if checked {
-//		w.Write([]byte(echoStr))
-//	}
-}
-
-func checkSign(sign,timestamp,nonce,token string) bool {
-
-	sumSign :=  util.Sign(token,timestamp,nonce);
-
-	//比较
-	if sumSign == sign{
-		return true
+	log.Println("Wechat Service: Start!")
+	http.HandleFunc("/", procRequest)
+	err := http.ListenAndServe(":80", nil)
+	if err != nil {
+		log.Fatal("Wechat Service: ListenAndServe failed, ", err)
 	}
-	return false
+	log.Println("Wechat Service: Stop!")
 }
