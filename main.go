@@ -3,12 +3,9 @@ package main
 import (
 	"net/http"
 	"log"
-	"sort"
-	"io"
-	"crypto/sha1"
-	"fmt"
 
 //	"github.com/chanxuehong/wechat/mp"
+	"github.com/chanxuehong/wechat/util"
 )
 
 const AppID = "wx96ae3fe27ad45e53"
@@ -32,17 +29,8 @@ func sign(w http.ResponseWriter, req *http.Request) {
 }
 
 func checkSign(sign,timestamp,nonce,token string) bool {
-	tmp := []string{token,timestamp,nonce}
-	sort.StringSlice(tmp)
-	//连接为字符串
-	var str string
-	for _,v := range tmp{
-		str += v
-	}
-	//sha1加密
-	t := sha1.New();
-	io.WriteString(t,str);
-	sumSign :=  fmt.Sprintf("%x",t.Sum(nil));
+
+	sumSign :=  util.Sign(token,timestamp,nonce);
 
 	//比较
 	if sumSign == sign{
