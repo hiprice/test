@@ -21,13 +21,14 @@ func main() {
 
 func sign(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
-	checked := checkSign(req.Form["signature"],req.Form["timestamp"],req.Form["nonce"],req.Form["token"])
+	log.Println(req.Form)
+//	checked := checkSign(req.Form["signature"],req.Form["timestamp"],req.Form["nonce"],req.Form["token"])
 	echoStr := req.Form["echoStr"]
 
 	log.Println(echoStr)
-	if checked {
-		w.Write([]byte(echoStr))
-	}
+//	if checked {
+//		w.Write([]byte(echoStr))
+//	}
 }
 
 func checkSign(sign,timestamp,nonce,token string) bool {
