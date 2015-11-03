@@ -14,6 +14,8 @@ import (
 )
 
 const (
+	AppId = "wx96ae3fe27ad45e53"
+	AppSecret = "ea4a0db81cc6a0017a69b0172515d5d8"
 	token = "wexin"
 )
 
@@ -60,7 +62,7 @@ func main() {
 }
 
 
-var AccessTokenServer = mp.NewDefaultAccessTokenServer("appId", "appSecret", nil) // 一個應用只能有一個實例
+var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
 var mpClient = mp.NewClient(AccessTokenServer, nil)
 
 func createMenu() {
