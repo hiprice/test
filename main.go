@@ -22,7 +22,7 @@ const (
 func main() {
 	log.Println("Wechat Service: Start!")
 	http.HandleFunc("/", procRequest)
-	http.HandleFunc("/menu", createMenu())
+	http.HandleFunc("/menu", createMenu)
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		log.Fatal("Wechat Service: ListenAndServe failed, ", err)
@@ -61,8 +61,10 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 	log.Println("Wechat Service: validateUrl Ok!")
 }
 
-func createMenu() {
+func createMenu(w http.ResponseWriter, r *http.Request) {
 
+	log.Println("create menu: begin...")
+	fmt.Println("%v",r.Body)
 	var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
 	var mpClient = mp.NewClient(AccessTokenServer, nil)
 
@@ -82,9 +84,7 @@ func createMenu() {
 		fmt.Println(err)
 		return
 	}
+
 	fmt.Println("ok")
-}
-
-func GetToken() {
-
+	w.Write([]byte("create menu:success"))
 }
