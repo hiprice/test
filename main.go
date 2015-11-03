@@ -19,6 +19,17 @@ const (
 	token = "wexin"
 )
 
+func main() {
+	log.Println("Wechat Service: Start!")
+	http.HandleFunc("/", procRequest)
+	http.HandleFunc("/menu", createMenu())
+	err := http.ListenAndServe(":80", nil)
+	if err != nil {
+		log.Fatal("Wechat Service: ListenAndServe failed, ", err)
+	}
+	log.Println("Wechat Service: Stop!")
+}
+
 func makeSignature(timestamp, nonce string) string {
 	sl := []string{token, timestamp, nonce}
 	sort.Strings(sl)
@@ -50,23 +61,13 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 	log.Println("Wechat Service: validateUrl Ok!")
 }
 
-func main() {
-	log.Println("Wechat Service: Start!")
-	http.HandleFunc("/", procRequest)
-	http.HandleFunc("/menu", createMenu())
-	err := http.ListenAndServe(":80", nil)
-	if err != nil {
-		log.Fatal("Wechat Service: ListenAndServe failed, ", err)
-	}
-	log.Println("Wechat Service: Stop!")
-}
-
-
-var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
-var mpClient = mp.NewClient(AccessTokenServer, nil)
-
 func createMenu() {
+
+	var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
+	var mpClient = mp.NewClient(AccessTokenServer, nil)
+
 	var subButtons = make([]menu.Button, 2)
+
 	subButtons[0].SetAsViewButton("搜索", "http://www.soso.com/")
 	subButtons[1].SetAsClickButton("赞一下我们", "V1001_GOOD")
 
@@ -82,4 +83,8 @@ func createMenu() {
 		return
 	}
 	fmt.Println("ok")
+}
+
+func GetToken() {
+
 }
