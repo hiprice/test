@@ -8,6 +8,9 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+
+	"github.com/chanxuehong/wechat/mp"
+	"github.com/chanxuehong/wechat/mp/menu"
 )
 
 const (
@@ -48,9 +51,33 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.Println("Wechat Service: Start!")
 	http.HandleFunc("/", procRequest)
+	http.HandleFunc("/menu", createMenu())
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		log.Fatal("Wechat Service: ListenAndServe failed, ", err)
 	}
 	log.Println("Wechat Service: Stop!")
+}
+
+
+var AccessTokenServer = mp.NewDefaultAccessTokenServer("appId", "appSecret", nil) // 一個應用只能有一個實例
+var mpClient = mp.NewClient(AccessTokenServer, nil)
+
+func createMenu() {
+	var subButtons = make([]menu.Button, 2)
+	subButtons[0].SetAsViewButton("搜索", "http://www.soso.com/")
+	subButtons[1].SetAsClickButton("赞一下我们", "V1001_GOOD")
+
+	var mn menu.Menu
+	mn.Buttons = make([]menu.Button, 3)
+	mn.Buttons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
+	mn.Buttons[1].SetAsViewButton("视频", "http://v.qq.com/")
+	mn.Buttons[2].SetAsSubMenuButton("子菜单", subButtons)
+
+	menuClient := (*menu.Client)(mpClient)
+	if err := menuClient.CreateMenu(mn); err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("ok")
 }
