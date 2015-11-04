@@ -45,8 +45,7 @@ func TextMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 
 	fmt.Println("==用户请求==")
-	fmt.Println(r.RawMsgXML)
-	fmt.Println(request.GetText(r.RawMsgXML))
+	fmt.Println(string(r.RawMsgXML))
 
 	// 简单起见，把用户发送过来的文本原样回复过去
 	text := request.GetText(r.MixedMsg) // 可以省略, 直接从 r.MixedMsg 取值
