@@ -9,6 +9,7 @@ import (
 	"github.com/chanxuehong/wechat/mp/message/request"
 	"github.com/chanxuehong/wechat/mp/message/response"
 	"github.com/chanxuehong/wechat/mp/menu"
+"github.com/garyburd/redigo/redis"
 )
 
 const (
@@ -45,6 +46,8 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 	text := menu.GetClickEvent(r.MixedMsg)
 
+	key := "click_count_"+text.EventKey
+
 	var content string
 	switch text.EventKey {
 	case "V1001_TODAY_MUSIC":
@@ -55,6 +58,8 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	default:
 		content = text.EventKey + "oh ,what is wrong"
 	}
+
+	Incr(key)
 
 	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, content)
 
@@ -83,4 +88,27 @@ func TextMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 	mp.WriteRawResponse(w, r, resp) // 明文模式
 	//	mp.WriteAESResponse(w, r, resp) // 安全模式
+}
+
+
+func Incr(key string)(bool,error){
+	var aft bool = false
+
+	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
+	defer conn.Close()
+
+	if err != nil{
+		fmt.Println("连接faild")
+		return aft,err
+	}
+
+	num,err := conn.Do("INCR",key)
+
+	if err != nil{
+		return aft,err
+	}
+	fmt.Println("incr : num -" ,num)
+
+
+	return true,nil
 }
