@@ -46,7 +46,7 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 	text := menu.GetClickEvent(r.MixedMsg)
 
-	key := "click_count_"+text.EventKey
+//	key := "click_count_"+text.EventKey
 
 	var content string
 	switch text.EventKey {
@@ -59,7 +59,7 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 		content = text.EventKey + "oh ,what is wrong"
 	}
 
-	Incr(key)
+//	Incr(key)
 
 	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, content)
 
