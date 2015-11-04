@@ -3,11 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
+	"fmt"
 
 	"github.com/chanxuehong/wechat/mp"
 	"github.com/chanxuehong/wechat/mp/message/request"
 	"github.com/chanxuehong/wechat/mp/message/response"
-	"fmt"
+	"github.com/chanxuehong/wechat/mp/menu"
 )
 
 const (
@@ -16,12 +17,18 @@ const (
 	token = "wexin"
 )
 
+var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
+var mpClient = mp.NewClient(AccessTokenServer, nil)
 
 
 func main() {
 
 	messageServeMux := mp.NewMessageServeMux()
 	messageServeMux.MessageHandleFunc(request.MsgTypeText, TextMessageHandler) // 注册文本处理 Handler
+
+	//事件处理
+	messageServeMux.EventHandleFunc(menu.EventTypeClick, EventMessageHandler) // 注册文本处理 Handler
+
 
 	// 下面函数的几个参数设置成你自己的参数: oriId, token, appId
 	mpServer := mp.NewDefaultServer("", token, "", nil, messageServeMux)
@@ -33,9 +40,20 @@ func main() {
 	http.ListenAndServe(":80", nil)
 }
 
+//====事件推送====
+func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
+
+	text := menu.GetClickEvent(r.MixedMsg)
+	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, text.EventKey)
+
+	mp.WriteRawResponse(w, r, resp) // 明文模式
+}
+
+//====处理文本推送====
 func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	log.Println(err.Error())
 }
+
 
 // 文本消息的 Handler
 func TextMessageHandler(w http.ResponseWriter, r *mp.Request) {
