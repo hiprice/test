@@ -40,11 +40,23 @@ func main() {
 	http.ListenAndServe(":80", nil)
 }
 
-//====事件推送====
+//====自定义事件推送====
 func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 	text := menu.GetClickEvent(r.MixedMsg)
-	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, text.EventKey)
+
+	var content string
+	switch text.EventKey {
+	case "V1001_TODAY_MUSIC":
+		content = text.EventKey + "你点击了一下"
+
+	case "V1001_GOOD":
+		content = text.EventKey + "收到您的点赞，我非常高兴"
+	default:
+		content = text.EventKey + "oh ,what is wrong"
+	}
+
+	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, content)
 
 	mp.WriteRawResponse(w, r, resp) // 明文模式
 }
