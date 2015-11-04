@@ -1,4 +1,5 @@
 package main
+/*
 
 import (
 	"crypto/sha1"
@@ -122,3 +123,4 @@ func responseText() {
 	http.Handle("/wechat", mpServerFrontend)
 	http.ListenAndServe(":80", nil)
 }
+*/
