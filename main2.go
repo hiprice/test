@@ -39,6 +39,8 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
 
 // 文本消息的 Handler
 func TextMessageHandler(w http.ResponseWriter, r *mp.Request) {
+
+	fmt.Println(request)
 	// 简单起见，把用户发送过来的文本原样回复过去
 	text := request.GetText(r.MixedMsg) // 可以省略, 直接从 r.MixedMsg 取值
 	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, text.Content)
