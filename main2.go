@@ -40,9 +40,8 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
 // 文本消息的 Handler
 func TextMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
-	fmt.Println("用户事件：",request.GetScanEvent(r.MixedMsg))
-	fmt.Println("用户关注事件：",request.GetSubscribeByScanEvent(r.MixedMsg))
-	fmt.Println("用户取消关注事件：",request.GetUnsubscribeEvent(r.MixedMsg))
+	fmt.Println("用户事件：",r.MixedMsg.Event)
+	fmt.Println(r.MixedMsg.EventKey)
 
 	fmt.Println(r.MixedMsg)
 	// 简单起见，把用户发送过来的文本原样回复过去
