@@ -17,10 +17,7 @@ func main() {
 	imagePath := "../IMG_0129.JPG"
 	accessTokenSer := mp.NewDefaultAccessTokenServer(AppId,AppSecret,nil)
 
-	client,err := media.NewClient(accessTokenSer,nil)
-	if err != nil{
-		fmt.Println(err)
-	}
+	client := media.NewClient(accessTokenSer,nil)
 
 	mediaInfo ,err := client.UploadImage(imagePath)
 	if err != nil{
