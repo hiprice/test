@@ -38,17 +38,24 @@ func main() {
 
 	// 那么可以这么注册 http.Handler
 	http.Handle("/index", mpServerFrontend)
+	http.HandleFunc("/createMenu",CreateMenu)
+
 	http.ListenAndServe(":80", nil)
 }
 
-func CreateMenu() {
+func CreateMenu(w http.ResponseWriter,r *http.Request) {
 	var subButtons = make([]menu.Button, 2)
+
 	subButtons[0].SetAsViewButton("搜索", "http://www.soso.com/")
 	subButtons[1].SetAsClickButton("赞一下我们", "V1001_GOOD")
 
+	var testButtons = make([]menu.Button,2)
+	testButtons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
+	testButtons[1].SetAsClickButton("来一张图片","V1001_IMG")
+
 	var mn menu.Menu
 	mn.Buttons = make([]menu.Button, 3)
-	mn.Buttons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
+	mn.Buttons[0].SetAsSubMenuButton("...",testButtons)
 	mn.Buttons[1].SetAsViewButton("视频", "http://v.qq.com/")
 	mn.Buttons[2].SetAsSubMenuButton("子菜单", subButtons)
 
@@ -57,7 +64,9 @@ func CreateMenu() {
 		fmt.Println(err)
 		return
 	}
+
 	fmt.Println("ok")
+	w.Write([]byte("create menu:success"))
 }
 
 //====自定义事件推送====
@@ -71,9 +80,11 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	switch text.EventKey {
 	case "V1001_TODAY_MUSIC":
 		content = text.EventKey + "你点击了一下"
-
 	case "V1001_GOOD":
 		content = text.EventKey + "收到您的点赞，我非常高兴"
+	case "V1001_IMG":	//恢复图片信息
+		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,"SQP8zwCqsiJP02ccSx2cY80w6e5q1K0FUH2QA5m8aPgQA3Ys0Xsxal8Li21sg_ia")
+		mp.WriteRawResponse(w,r,resp)
 	default:
 		content = text.EventKey + "oh ,what is wrong"
 	}

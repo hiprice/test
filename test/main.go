@@ -78,9 +78,13 @@ func createMenu(w http.ResponseWriter, r *http.Request) {
 	subButtons[0].SetAsViewButton("搜索", "http://www.soso.com/")
 	subButtons[1].SetAsClickButton("赞一下我们", "V1001_GOOD")
 
+	var testButtons = make([]menu.Button,2)
+	testButtons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
+	testButtons[1].SetAsClickButton("来一张图片","V1001_IMG")
+
 	var mn menu.Menu
 	mn.Buttons = make([]menu.Button, 3)
-	mn.Buttons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
+	mn.Buttons[0].SetAsSubMenuButton("...",testButtons)
 	mn.Buttons[1].SetAsViewButton("视频", "http://v.qq.com/")
 	mn.Buttons[2].SetAsSubMenuButton("子菜单", subButtons)
 

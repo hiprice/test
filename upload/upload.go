@@ -11,10 +11,11 @@ const (
 	AppSecret = "ea4a0db81cc6a0017a69b0172515d5d8"
 	token = "wexin"
 )
+//{image SQP8zwCqsiJP02ccSx2cY80w6e5q1K0FUH2QA5m8aPgQA3Ys0Xsxal8Li21sg_ia 1448586880}
 
 func main() {
 
-	imagePath := "../IMG_0129.JPG"
+	imagePath := "../img/IMG_0129.JPG"
 	accessTokenSer := mp.NewDefaultAccessTokenServer(AppId,AppSecret,nil)
 
 	client := media.NewClient(accessTokenSer,nil)
