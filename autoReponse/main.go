@@ -52,10 +52,11 @@ func CreateMenu(w http.ResponseWriter,r *http.Request) {
 	var testButtons = make([]menu.Button,2)
 	testButtons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
 	testButtons[1].SetAsClickButton("来一张图片","V1001_IMG")
+	testButtons[2].SetAsLocationSelectButton("地理位置","V1001_LOCATION")
 
 	var mn menu.Menu
 	mn.Buttons = make([]menu.Button, 3)
-	mn.Buttons[0].SetAsSubMenuButton("...",testButtons)
+	mn.Buttons[0].SetAsSubMenuButton("test",testButtons)
 	mn.Buttons[1].SetAsViewButton("视频", "http://v.qq.com/")
 	mn.Buttons[2].SetAsSubMenuButton("子菜单", subButtons)
 
@@ -85,6 +86,9 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	case "V1001_IMG":	//恢复图片信息
 		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,"SQP8zwCqsiJP02ccSx2cY80w6e5q1K0FUH2QA5m8aPgQA3Ys0Xsxal8Li21sg_ia")
 		mp.WriteRawResponse(w,r,resp)
+	case "V1001_LOCATION":
+		content = text.Event + "地理位置上报成功"
+		fmt.Println(text)
 	default:
 		content = text.EventKey + "oh ,what is wrong"
 	}
