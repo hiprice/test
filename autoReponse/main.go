@@ -25,11 +25,16 @@ var mpClient = mp.NewClient(AccessTokenServer, nil)
 func main() {
 
 	messageServeMux := mp.NewMessageServeMux()
+
 	messageServeMux.MessageHandleFunc(request.MsgTypeText, TextMessageHandler) // 注册文本处理 Handler
 
 	//事件处理
-	messageServeMux.EventHandleFunc(menu.EventTypeClick, EventMessageHandler) // 注册文本处理 Handler
+	messageServeMux.EventHandleFunc(menu.EventTypeClick, EventMessageHandler) // 注册时间处理 Handler
 
+	//地理位置处理
+	messageServeMux.EventHandleFunc(menu.EventTypeLocationSelect, LocationEventMessageHandle)
+
+//	messageServeMux.EventHandleFunc(request.EventTypeLocation, LocationEventMessageHandle)
 
 	// 下面函数的几个参数设置成你自己的参数: oriId, token, appId
 	mpServer := mp.NewDefaultServer("", token, "", nil, messageServeMux)
@@ -41,6 +46,13 @@ func main() {
 	http.HandleFunc("/createMenu",CreateMenu)
 
 	http.ListenAndServe(":80", nil)
+}
+
+
+func LocationEventMessageHandle(w http.ResponseWriter, r *mp.Request) {
+	location := menu.GetLocationSelectEvent(r.MixedMsg)
+	fmt.Println(location)
+	fmt.Println(1111)
 }
 
 func CreateMenu(w http.ResponseWriter,r *http.Request) {
@@ -89,6 +101,10 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 		mp.WriteRawResponse(w,r,resp)
 	case "V1001_LOCATION":
 		content = text.Event + "text - 地理位置上报成功"
+		fmt.Println(content)
+		fmt.Println(location.SendLocationInfo.Label)
+		fmt.Println(location.SendLocationInfo.PoiName)
+
 	default:
 		content = text.EventKey + "oh ,what is wrong"
 	}
