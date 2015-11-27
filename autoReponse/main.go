@@ -74,6 +74,7 @@ func CreateMenu(w http.ResponseWriter,r *http.Request) {
 func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 
 	text := menu.GetClickEvent(r.MixedMsg)
+	location := menu.GetLocationSelectEvent(r.MixedMsg)
 
 //	key := "click_count_"+text.EventKey
 
@@ -87,11 +88,21 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,"SQP8zwCqsiJP02ccSx2cY80w6e5q1K0FUH2QA5m8aPgQA3Ys0Xsxal8Li21sg_ia")
 		mp.WriteRawResponse(w,r,resp)
 	case "V1001_LOCATION":
-		content = text.Event + "地理位置上报成功"
+		content = text.Event + "text - 地理位置上报成功"
 	default:
 		content = text.EventKey + "oh ,what is wrong"
 	}
 
+	switch location.EventKey {
+	case "V1001_LOCATION" :
+		fmt.Println(location.EventKey)
+		content = location.Event + " location - 上报地理位置成功"
+		fmt.Println(location.SendLocationInfo.Label)
+		fmt.Println(location.SendLocationInfo.PoiName)
+	default:
+		fmt.Println(location.EventKey)
+		content = "location - 上报地理位置失败"
+	}
 //	Incr(key)
 
 	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime, content)
