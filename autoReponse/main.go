@@ -28,13 +28,17 @@ func main() {
 
 	messageServeMux.MessageHandleFunc(request.MsgTypeText, TextMessageHandler) // 注册文本处理 Handler
 
-	//事件处理
+	//菜单事件处理
 	messageServeMux.EventHandleFunc(menu.EventTypeClick, EventMessageHandler) // 注册时间处理 Handler
 
-	//地理位置处理
-	messageServeMux.EventHandleFunc(menu.EventTypeLocationSelect, LocationEventMessageHandle)
+	//菜单跳转链接时间处理
+	messageServeMux.EventHandleFunc(menu.EventTypeView, ViewMessageHandler) // 注册时间处理 Handler
 
-//	messageServeMux.EventHandleFunc(request.EventTypeLocation, LocationEventMessageHandle)
+	//菜单地理位置处理
+	messageServeMux.EventHandleFunc(menu.EventTypeLocationSelect, LocationEventSelectMessageHandle)
+
+	//自动上报地理位置消息
+	messageServeMux.EventHandleFunc(request.EventTypeLocation, LocationEventMessageHandle)
 
 	// 下面函数的几个参数设置成你自己的参数: oriId, token, appId
 	mpServer := mp.NewDefaultServer("", token, "", nil, messageServeMux)
@@ -49,10 +53,35 @@ func main() {
 }
 
 
+func ViewMessageHandler(w http.ResponseWriter ,r *mp.Request){
+	context := menu.GetViewEvent(r.MixedMsg)
+
+	fmt.Println(context)
+
+	content := context.MsgType
+
+	resp := response.NewText(context.FromUserName,context.ToUserName,context.CreateTime,content)
+
+	mp.WriteRawResponse(w,r,resp)
+	fmt.Println("ViewMessageHandler")
+}
+
 func LocationEventMessageHandle(w http.ResponseWriter, r *mp.Request) {
+	location := request.GetLocationEvent(r.MixedMsg)
+
+	fmt.Println(location)
+	fmt.Println("LocationEventMessageHandle")
+}
+
+//菜单处理地理位置信息
+func LocationEventSelectMessageHandle(w http.ResponseWriter, r *mp.Request) {
 	location := menu.GetLocationSelectEvent(r.MixedMsg)
 	fmt.Println(location)
-	fmt.Println(1111)
+
+	resp := response.NewText(location.FromUserName,location.ToUserName,location.CreateTime,location.SendLocationInfo.Label)
+
+	mp.WriteRawResponse(w,r,resp)
+	fmt.Println("LocationEventSelectMessageHandle")
 }
 
 func CreateMenu(w http.ResponseWriter,r *http.Request) {
