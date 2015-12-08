@@ -23,11 +23,12 @@ func main() {
 //	client := media.NewClient(accessTokenSer,nil)
 
 	client := material.NewClient(accessTokenSer,nil)
-	mediaInfo ,err := client.UploadImage(imagePath)
+	mediaInfo,url ,err := client.UploadImage(imagePath)
 	if err != nil{
 		fmt.Println(err)
 	}
 
 	fmt.Println("mediaInfo : ",mediaInfo)
+	fmt.Println("url : ",url)
 
 }
