@@ -16,6 +16,7 @@ const (
 	AppId = "wx96ae3fe27ad45e53"
 	AppSecret = "ea4a0db81cc6a0017a69b0172515d5d8"
 	token = "wexin"
+	mediaId = "X9q8xoHV7-3W5E-ohorp_eiKp53vOv-2SUYipXHHA_A"
 )
 
 var AccessTokenServer = mp.NewDefaultAccessTokenServer(AppId, AppSecret, nil) // 一個應用只能有一個實例
@@ -126,7 +127,7 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	case "V1001_GOOD":
 		content = text.EventKey + "收到您的点赞，我非常高兴"
 	case "V1001_IMG":	//恢复图片信息
-		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,"SQP8zwCqsiJP02ccSx2cY80w6e5q1K0FUH2QA5m8aPgQA3Ys0Xsxal8Li21sg_ia")
+		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,mediaId)
 		mp.WriteRawResponse(w,r,resp)
 	case "V1001_LOCATION":
 		content = text.Event + "text - 地理位置上报成功"
