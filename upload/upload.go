@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/chanxuehong/wechat/mp/media"
+    "github.com/chanxuehong/wechat/mp/material"
+//	"github.com/chanxuehong/wechat/mp/media"
 	"github.com/chanxuehong/wechat/mp"
 	"fmt"
 )
@@ -18,11 +19,15 @@ func main() {
 	imagePath := "../img/IMG_0129.JPG"
 	accessTokenSer := mp.NewDefaultAccessTokenServer(AppId,AppSecret,nil)
 
-	client := media.NewClient(accessTokenSer,nil)
+//	临时素材
+//	client := media.NewClient(accessTokenSer,nil)
 
+	client := material.NewClient(accessTokenSer,nil)
 	mediaInfo ,err := client.UploadImage(imagePath)
 	if err != nil{
 		fmt.Println(err)
 	}
-	fmt.Println(mediaInfo)
+
+	fmt.Println("mediaInfo : ",mediaInfo)
+
 }

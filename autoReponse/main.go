@@ -84,20 +84,20 @@ func LocationEventSelectMessageHandle(w http.ResponseWriter, r *mp.Request) {
 	fmt.Println("LocationEventSelectMessageHandle")
 }
 
-func CreateMenu(w http.ResponseWriter,r *http.Request) {
+func CreateMenu(w http.ResponseWriter, r *http.Request) {
 	var subButtons = make([]menu.Button, 2)
 
 	subButtons[0].SetAsViewButton("搜索", "http://www.soso.com/")
 	subButtons[1].SetAsClickButton("赞一下我们", "V1001_GOOD")
 
-	var testButtons = make([]menu.Button,3)
+	var testButtons = make([]menu.Button, 3)
 	testButtons[0].SetAsClickButton("今日歌曲", "V1001_TODAY_MUSIC")
-	testButtons[1].SetAsClickButton("来一张图片","V1001_IMG")
-	testButtons[2].SetAsLocationSelectButton("地理位置","V1001_LOCATION")
+	testButtons[1].SetAsClickButton("来一张图片", "V1001_IMG")
+	testButtons[2].SetAsLocationSelectButton("地理位置", "V1001_LOCATION")
 
 	var mn menu.Menu
 	mn.Buttons = make([]menu.Button, 3)
-	mn.Buttons[0].SetAsSubMenuButton("test",testButtons)
+	mn.Buttons[0].SetAsSubMenuButton("test", testButtons)
 	mn.Buttons[1].SetAsViewButton("视频", "http://v.qq.com/")
 	mn.Buttons[2].SetAsSubMenuButton("子菜单", subButtons)
 
