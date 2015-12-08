@@ -126,7 +126,7 @@ func EventMessageHandler(w http.ResponseWriter, r *mp.Request) {
 		content = text.EventKey + "你点击了一下"
 	case "V1001_GOOD":
 		content = text.EventKey + "收到您的点赞，我非常高兴"
-	case "V1001_IMG":	//恢复图片信息
+	case "V1001_IMG":	//回复图片信息
 		resp := response.NewImage(text.FromUserName,text.ToUserName,text.CreateTime,mediaId)
 		mp.WriteRawResponse(w,r,resp)
 	case "V1001_LOCATION":
